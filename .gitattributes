@@ -1,0 +1,4 @@
+*.sh linguist-detectable=false
+*.py linguist-detectable=false
+*.java linguist-detectable=true
+*.java linguist-language=Java
