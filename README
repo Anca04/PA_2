@@ -1,0 +1,92 @@
+Tema 2 - PA
+
+Problema 1
+
+Am inceput rezolvarea acestei probleme prin a crea chei si perechi, adica ideea
+mea a fost sa asociez fiecarei distante, lista de noduri care are respectiva
+distanta in vector. De exemplu, pentru vectorul 0 1 1 2, am creat perechile
+0 -> 1, 1 -> {2, 3}, 2 -> {4}. Aceasta operatie m-a costat O(n). Apoi, testez
+urmatoarele, daca nu contine cheia 0, atunci nodul 1 nu e valid, nu pot forma un
+graf valid, nodul 1 trebuie sa aiba distanta 0, sau daca contine doar nodul 1,
+din nou, nu pot forma un graf valid cu un singur nod, sau daca am mai multe
+noduri la distanta 0, am iarasi un graf invalid. Pornesc crearea grafului mereu
+din nodul 1. Parcurg perechile formate, extrag distanta si lista de noduri, apoi
+daca distanta e 0, ma aflu la nodul 1, sar peste, altfel testez daca distanta
+precedenta exista sau daca are noduri in lista, deoarece daca aceste condtii
+sunt false, nu pot forma un graf valid. Am terminat de verificat cazurile unde
+nu pot obtine un graf. Daca distanta e 1, atunci sunt la primul nivel, unde
+leg toate nodurile cu distanta 1 de nodul 1. Pe ramura cealalta, alternez nodul
+de care leg, pentru a ma asigura ca nodurile sunt introduse direct, deoarece
+daca as lega doar de un singur nod, acela poate nu a fost bine introdus. Astfel,
+am decis sa alternez nodurile de pe nivelul de deasupra si leg nodurile de la
+nivelul respectiv de ele. La final, am obtinut fie un graf valid, fie -1, care
+inseamna ca nu am reusit sa construiesc un graf corespunzator.
+Complexitate temporala: aproximativ O(N)
+Complexitate spatiala: O(N)
+
+Problema 2
+
+Pentru a implementa aceasta problema, m-am gandit sa aplic bfs pentru a acoperi
+zone cat mai mari. Astfel, ma folosesc de 2 vectori de directie pentru vizitarea
+vecinilor, o coada in care adaug elementul curent si ai carui vecini urmeaza sa
+ii vizitez si o matrice in care marchez celula ca fiind vizitata. Aplic bfs
+pentru fiecare celula a matricei, resetand de fiecare data matricea pentru
+vizitare. Rezultatul final va fi maximul dintre rezultatul deja acumulat si ceea
+ce intoarce bfs. Functia bfs adauga celula de start in coada, o marcheaza ca
+vizitata, o numar ca si o casuta si calculez intervalul suprafetei mele. Adica,
+voi cauta cea mai mare arie cuprinsa intre minimul reprezentat de elementul de
+start al bfs-ului si maximul reprezentat de suma dintre elementul de start al
+bfs-ului si K. De ce? Initial, am plecat cu minimul si maximul de aceeasi
+valoare si anume elementul de start al bfs-ului, iar apoi la fiecare pas
+actualizam acest interval, aceasta solutie nu reusea sa rezolve ultimul test,
+nu gasea solutia optima. Astfel, m-am gandit sa ma rezum la un interval static,
+adica minimul sa fie reprezentat de elementul de start al bfs-ului, iar maximul
+va fi valoarea maxima pe care o pot obtine intr-o zona, max - min <= K, adica
+max <= K + min, de aici valoarea maxima va fi min + K. Iar problema s-a
+simplificat doar la gasirea elementelor din acest interval. Extrag elemente din
+coada, cat timp mai am elemente de vizitat. Apoi, parcurg vecinii, verific daca
+se afla in granitele matricei si daca nu au fost vizitati. In plus, daca apartin
+intervalului, inseamna ca pot adauga acel element la zona pe care eu trebuie sa
+o aflu, adaug celula in coada, o marchez ca vizitata si cresc numarul de casute.
+De asemenea, mi-am definit o clasa pentru a adauga mai usor in coada perechi de
+tipul {i, j, val}.
+Complexitate temporala: O(N ^ 2 * M ^ 2)
+Complexitate spatiala: O(N * M)
+
+Problema 3
+
+In aceasta problema trebuie sa calculez energia minima, iar pentru asta m-am
+gandit sa folosesc Dijkstra. Pornesc prin a genera pentru fiecare bustean
+toate mutarile posibile, de exemplu, pentru busteanul 1 cu mutarile NNN, retin
+cu ajutorul unei clase definite, coordonatele actualizate la momentul t. La
+final, obtin un vector, iar pentru fiecare bustean am perechi descrise ca mai
+sus. Apoi, generez cu ajutorul algoritmului Dijkstra toate mutarile posibile.
+Iau o coada de prioritati, care ma ajuta sa obtin solutia optima si minima, un
+HashSet pentru a retine mutarile vizitate, astfel evit duplicatele si variabila
+unde voi retine energia minima. Cat timp mai am elemente in coada de prioritati,
+adica mai am mutari de vizitat, extrag starea curenta a lui Robin Hood. Pentru
+asta mi-am definit inca o clasa unde retin indexul busteanului pe care se afla,
+pozitia care va fi intre 0 si lungimea totala a busteanului, energia, toate la
+momentul t. Verific daca starea curenta a fost vizitata, daca nu o vizitez,
+altfel sar peste. Extrag busteanul curent si pozitia in care se afla acesta,
+apoi calculez coordonatele lui Robin Hood pe acest bustean, verificand daca e
+veritical si orizontal, iar bazandu-ma pe aceasta informatie deduc coordonatele.
+Apoi, verific daca Robin Hood a gasit-o pe Maid Marian, daca da, calculez
+energia minima si salvez mutarile obtinute. Daca ramane fara timp, inseamna ca
+nu a putut ajunge la Maid Marian. In continuare, dupa conditiile de oprire,
+simulez cele 3 tipuri de mutari. Prima, sta pe loc, o adaug in coada, se
+schimba doar energia, adaugand costul E1. A doua, poate merge fie N, S, fie E,
+V. Calculez mai intai lungimea busteanului, apoi verific daca acesta este
+vertical sau orizontal, in functie de ce obtin, am cate 2 cazuri. Daca
+busteanul e vertical, am 2 directii, N sau S. Daca nu se afla deja la sfarsitul
+busteanului se poate duce spre N, adaug in coada aceasta mutare, crescand
+pozitia cu o unitate si adaug de asemenea noua mutare. Daca nu se afla deja la
+inceputul busteanului, poate merge spre S, procedez la fel, adaug in coada.
+Aceeasi logica am si pentru cand busteanul e orizontal, se schimba doar directia
+cu E si V, lucrez pe axa OX. A treia, sare pe alt bustean daca se intersecteaza
+busteanul curent cu acesta. Asfel, parcurg toti bustenii si verific daca se
+intersecteaza cu vreunul. Daca da, din nou, am 2 cazuri, bustean veritcal si
+orizontal, iar pentru fiecare recalculez pozitia lui Robin Hood si adaug in
+coada. La final, voi obtine solutia pentru energia minima, afisand si mutarile.
+Complexitate temporala: O(T * N * )
+Complexitate spatiala: O(T + N)
